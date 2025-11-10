@@ -1,25 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verza</title>
+    <title>Join Verza</title>
+    <link rel="stylesheet" type="text/css" href="regstyle.css">
 </head>
-
 <body>
     <div class="register-container">
-        <div class="logo">Ver<span>za</span></div>
-        <form method="POST">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit" class="btn">Register</button>
-        </form>
-        <div class="link">
-            Already have an account? <a href="login.html">Login</a>
+        <div class="header-image"></div>
+        <div class="register-form">
+            <div class="welcome-text">
+                <h1>Join Verza!</h1>
+                <p>create your account and start sharing</p>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="input-field" name="name" placeholder="Full Name" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" class="input-field" name="username" placeholder="Username" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="input-field" name="email" placeholder="Email" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <div style="position: relative;">
+                    <input type="password" class="input-field" name="password" placeholder="••••••••" required>
+                    <span class="password-toggle" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: rgba(255, 255, 255, 0.6); cursor: pointer;">👁️</span>
+                </div>
+            </div>
+            
+            <button class="register-btn" type="submit">Register</button>
+            
+            <div class="divider">Or continue with</div>
+            
+            <div class="social-login">
+                <div class="social-btn">
+                    <div class="google-icon"></div>
+                </div>
+                <div class="social-btn">
+                    <div class="apple-icon"></div>
+                </div>
+                <div class="social-btn">
+                    <div class="facebook-icon"></div>
+                </div>
+            </div>
+            
+            <div class="login-link">
+                Already have an account? <a href="login.html">Login</a>
+            </div>
         </div>
     </div>
 </body>
-
 </html>
+

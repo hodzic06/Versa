@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
@@ -29,19 +29,23 @@ body {
 .header-image {
   width: 100%;
   height: 200px;
-  background: url('https://placehold.co/400x200/1a0d2e/ffffff?text=Reading+Person') no-repeat center center;
+  background: url("./photos/loginphoto.png") no-repeat center center;
   background-size: cover;
   position: relative;
 }
 
 .header-image::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8));
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.3),
+    rgba(0, 0, 0, 0.5)
+  );
 }
 
 .login-form {
@@ -160,7 +164,7 @@ body {
 
 .divider::before,
 .divider::after {
-  content: '';
+  content: "";
   flex: 1;
   height: 1px;
   background: rgba(255, 255, 255, 0.2);
@@ -193,21 +197,31 @@ body {
 }
 
 .google-icon {
-  width: 20px;
-  height: 20px;
-  background: url('https://placehold.co/20x20/ffffff/ffffff?text=G') center center no-repeat;
+  width: 30px;
+  height: 30px;
+  background-image: url("./photos/google.png");
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .apple-icon {
-  width: 20px;
-  height: 20px;
-  background: url('https://placehold.co/20x20/ffffff/ffffff?text=🍎') center center no-repeat;
+  width: 25px;
+  height: 25px;
+  background-image: url("./photos/ios.png");
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+
 }
 
 .facebook-icon {
-  width: 20px;
-  height: 20px;
-  background: url('https://placehold.co/20x20/ffffff/ffffff?text=f') center center no-repeat;
+  width: 27px;
+  height: 27px;
+  background-image: url("./photos/facebook.png");
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .signup-link {
@@ -227,7 +241,6 @@ body {
   text-decoration: underline;
 }
 
-/* Decorative elements to match the image */
 .decoration {
   position: absolute;
   z-index: -1;
@@ -262,15 +275,16 @@ body {
 
 @media (max-width: 480px) {
   .login-container {
-      margin: 0;
-      border-radius: 20px;
+    margin: 0;
+    border-radius: 20px;
+    height: 80vh;
   }
-  
+
   .login-form {
-      padding: 20px 15px;
+    padding: 20px 15px;
   }
-  
+
   .welcome-text h1 {
-      font-size: 24px;
+    font-size: 24px;
   }
 }
