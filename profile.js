@@ -1,90 +1,188 @@
-const usernameEl = document.querySelector('.profile-username');
-const nameEl = document.querySelector('.profile-name');
-const bioEl = document.querySelector('.profile-bio');
-const websiteEl = document.querySelector('.profile-website');
-const avatarEl = document.querySelector('.profile-avatar');
-
-const postsCountEl = document.querySelector('.stat-number:nth-child(1)');
-const followersCountEl = document.querySelector('.stat-number:nth-child(2)');
-const followingCountEl = document.querySelector('.stat-number:nth-child(3)');
-
-const actionBtn = document.querySelector('.edit-profile'); // dugme
+const usernameEl = document.querySelector(".profile-username");
+const nameEl = document.querySelector(".profile-name");
+const bioEl = document.querySelector(".profile-bio");
+const websiteEl = document.querySelector(".profile-website");
+const avatarEl = document.querySelector(".profile-avatar");
+const profileFeed = document.querySelector(".profile-feed");
+const createPostSection = document.querySelector(".create-post-section");
+const createPostInput = document.querySelector(".create-post-input");
+const createPostBtn = document.querySelector(".create-post-btn");
 
 const params = new URLSearchParams(window.location.search);
-const userIdParam = params.get('id');
+const userIdParam = params.get("id");
 
-// 🔹 Funkcije za JWT iz cookie
-function getTokenFromCookie(name = "token") {
-    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    return match ? match[2] : null;
-}
-function parseJwt(token) {
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        return JSON.parse(atob(base64));
-    } catch (e) { return null; }
-}
+let currentUser = null;
 
 async function loadProfile() {
-    try {
-        const endpoint = userIdParam
-            ? `http://localhost:3001/users/${userIdParam}`
-            : `http://localhost:3001/users/me`;
+  try {
+    const endpoint = userIdParam
+      ? `http://127.0.0.1:3001/users/${userIdParam}`
+      : `http://127.0.0.1:3001/users/me`;
 
-        const res = await fetch(endpoint, { credentials: 'include' });
-        if (!res.ok) throw new Error('Neuspješno učitavanje profila');
+    const res = await fetch(endpoint, { credentials: "include" });
+    const data = await res.json();
 
-        const data = await res.json();
-
-        // 🔹 fallback za oba endpointa
-        const user = data.user ? data.user : data; 
-        if (!user || !user.id) throw new Error('Nevalidan odgovor sa backend-a');
-
-        // Popunjavanje profila
-        usernameEl.textContent = user.username || '';
-        nameEl.textContent = user.name || '';
-        bioEl.textContent = user.bio || '';
-        websiteEl.textContent = user.website || '';
-        avatarEl.textContent = user.avatar ? `<img src="${user.avatar}" alt="avatar" />` : '👤';
-
-        const stats = user.stats || {};
-        const posts = stats.posts || user.posts_count || 0;
-        const followers = stats.followers || user.followers_count || 0;
-        const following = stats.following || user.following_count || 0;
-
-        const statElements = document.querySelectorAll('.stat-number');
-        if (statElements.length >= 3) {
-            statElements[0].textContent = posts;
-            statElements[1].textContent = followers;
-            statElements[2].textContent = following;
-        }
-
-        document.title = `${user.username} • Verza`;
-
-        // 🔹 Logika dugmeta koristeći token iz cookie
-        const token = getTokenFromCookie();
-        const decoded = token ? parseJwt(token) : null;
-        const loggedInUserId = decoded?.userId;
-
-        if (loggedInUserId && loggedInUserId === user.id) {
-            // Svoj profil
-            actionBtn.textContent = 'Edit Profile';
-            actionBtn.classList.add('edit-profile');
-            actionBtn.classList.remove('follow-btn');
-            actionBtn.onclick = () => console.log('Edit Profile clicked');
-        } else {
-            // Tuđi profil
-            actionBtn.textContent = 'Follow';
-            actionBtn.classList.add('follow-btn');
-            actionBtn.classList.remove('edit-profile');
-            actionBtn.onclick = () => console.log(`Follow ${user.username}`);
-        }
-
-    } catch (err) {
-        console.error('Greška pri učitavanju profila:', err);
-        alert('Greška pri učitavanju profila.');
+    if (!res.ok) {
+      if (res.status === 401 && !userIdParam)
+        window.location.href = "/login.html";
+      throw new Error(data.error || "Failed to load profile");
     }
+
+    currentUser = data.user || data;
+    console.log(currentUser);
+
+    usernameEl.textContent = currentUser.username;
+    nameEl.textContent = currentUser.name || "";
+    bioEl.textContent = currentUser.bio || "";
+    websiteEl.textContent = currentUser.website || "";
+    websiteEl.href = currentUser.website || "#";
+
+    // Avatar
+    avatarEl.innerHTML = currentUser.avatar
+      ? `<img src="${currentUser.avatar}" alt="avatar"/>`
+      : `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || currentUser.username)}&background=random&size=80&rounded=true" alt="avatar"/>`;
+
+    document.querySelectorAll(".stat-number")[0].textContent = (
+      currentUser.posts || []
+    ).length;
+    document.querySelectorAll(".stat-number")[1].textContent =
+      currentUser.followers_count || 0;
+    document.querySelectorAll(".stat-number")[2].textContent =
+      currentUser.following_count || 0;
+
+    document.title = `${currentUser.username} • Verza`;
+
+    if (!userIdParam) {
+      createPostSection.style.display = "block";
+      createPostBtn.onclick = createPost;
+    }
+
+    renderPosts(currentUser.posts || []);
+  } catch (err) {
+    console.error(err);
+    if (!userIdParam) window.location.href = "/login.html";
+  }
+}
+
+async function createPost() {
+  const text = createPostInput.value.trim();
+  if (!text) return alert("Post cannot be empty");
+
+  const res = await fetch("http://127.0.0.1:3001/posts/", {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ content: text }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) return alert(data.error || "Failed to create post");
+
+  createPostInput.value = "";
+  addPostToDOM(data, true);
+}
+
+function addPostToDOM(post, prepend = true) {
+  const card = document.createElement("div");
+  card.classList.add("post-card");
+
+  const header = document.createElement("div");
+  header.classList.add("post-header");
+  header.innerHTML = `<span>${usernameEl.textContent}</span> <span class="post-date">${new Date(post.created_at).toLocaleString()}</span>`;
+
+  const content = document.createElement("div");
+  content.classList.add("post-content");
+  content.textContent = post.content;
+
+  const actions = document.createElement("div");
+  actions.classList.add("post-actions");
+
+  if (!userIdParam && post.user_id === currentUser.id) {
+    const deleteBtn = document.createElement("button");
+    deleteBtn.classList.add("delete-btn");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.onclick = async () => {
+      await fetch(`http://127.0.0.1:3001/posts/${post.id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      card.remove();
+    };
+    actions.appendChild(deleteBtn);
+  }
+
+  const likeBtn = document.createElement("button");
+  likeBtn.classList.add("like-btn");
+  likeBtn.textContent = `Like (${post.likes?.length || 0})`;
+  likeBtn.onclick = async () => {
+    await fetch(`http://127.0.0.1:3001/posts/${post.id}/like`, {
+      method: "POST",
+      credentials: "include",
+    });
+    updatePostLikes(card, post.id);
+  };
+
+  const commentBtn = document.createElement("button");
+  commentBtn.classList.add("comment-btn");
+  commentBtn.textContent = `Comment (${post.comments?.length || 0})`;
+  commentBtn.onclick = () => {
+    const commentText = prompt("Enter your comment:");
+    if (!commentText) return;
+    fetch("http://127.0.0.1:3001/posts/comment", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ post_id: post.id, content: commentText }),
+    }).then(() => updatePostComments(card, post.id));
+  };
+
+  actions.appendChild(likeBtn);
+  actions.appendChild(commentBtn);
+
+  card.appendChild(header);
+  card.appendChild(content);
+  card.appendChild(actions);
+
+  const commentsDiv = document.createElement("div");
+  commentsDiv.classList.add("comments-div");
+  card.appendChild(commentsDiv);
+
+  if (prepend) profileFeed.prepend(card);
+  else profileFeed.appendChild(card);
+
+  updatePostComments(card, post.id);
+}
+
+async function updatePostLikes(card, postId) {
+  const res = await fetch(`http://127.0.0.1:3001/posts/${postId}`, {
+    credentials: "include",
+  });
+  const data = await res.json();
+  card.querySelector(".like-btn").textContent =
+    `Like (${data.likes?.length || 0})`;
+}
+
+async function updatePostComments(card, postId) {
+  const res = await fetch(`http://127.0.0.1:3001/posts/${postId}`, {
+    credentials: "include",
+  });
+  const data = await res.json();
+  const commentsDiv = card.querySelector(".comments-div");
+  commentsDiv.innerHTML = "";
+  if (data.comments?.length) {
+    data.comments.forEach((c) => {
+      const cDiv = document.createElement("div");
+      cDiv.style.fontSize = "12px";
+      cDiv.style.color = "#ccc";
+      cDiv.textContent = `${c.user_id}: ${c.content}`;
+      commentsDiv.appendChild(cDiv);
+    });
+  }
+}
+
+function renderPosts(posts) {
+  profileFeed.innerHTML = "";
+  posts.forEach((post) => addPostToDOM(post, false));
 }
 
 loadProfile();

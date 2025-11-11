@@ -1,81 +1,97 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Verza</title>
-    <link rel="stylesheet" type="text/css" href="homestyle.css">
-</head>
-<body>
-
+    <link rel="stylesheet" type="text/css" href="homestyle.css" />
+  </head>
+  <body>
     <div class="main-content">
-        <div class="header">
-            <div class="stories">
-                <div class="story">
-                    <div class="story-avatar">👤</div>
-                    <div class="story-username">Your Story</div>
-                </div>
-                <div class="story">
-                    <div class="story-avatar">👤</div>
-                    <div class="story-username">user1</div>
-                </div>
+      <div class="header">
+        <div class="stories">
+          <div class="story">
+            <div class="story-avatar">👤</div>
+            <div class="story-username" onClick="fetchProfile()">
+              Your Story
             </div>
+          </div>
+          <div class="story">
+            <div class="story-avatar">👤</div>
+            <div class="story-username">user1</div>
+          </div>
         </div>
-        
-        <div class="posts">
-            <div class="post">
-                <div class="post-header">
-                    <div class="post-avatar"></div>
-                    <div class="post-username">verza_user <span class="post-location">• Paris</span></div>
-                </div>
-                <div class="post-image">
-                    Post Image 1
-                </div>
-                <div class="post-actions">
-                    <div class="post-action">❤️</div>
-                    <div class="post-action">💬</div>
-                    <div class="post-action">↗️</div>
-                </div>
-                <div class="post-likes">1,243 likes</div>
-                <div class="post-caption"><span>verza_user</span> Beautiful day in Paris! 🌟</div>
-                <div class="post-time">2 hours ago</div>
-            </div>
-            
+      </div>
 
-            <div class="post">
-                <div class="post-header">
-                    <div class="post-avatar"></div>
-                    <div class="post-username">creative_mind <span class="post-location">• New York</span></div>
-                </div>
-                <div class="post-image">
-                    Post Image 2
-                </div>
-                <div class="post-actions">
-                    <div class="post-action">❤️</div>
-                    <div class="post-action">💬</div>
-                    <div class="post-action">↗️</div>
-                </div>
-                <div class="post-likes">892 likes</div>
-                <div class="post-caption"><span>creative_mind</span> Sunset vibes ✨</div>
-                <div class="post-time">5 hours ago</div>
+      <div class="posts">
+        <div class="post">
+          <div class="post-header">
+            <div class="post-avatar"></div>
+            <div class="post-username">
+              verza_user <span class="post-location">• Paris</span>
             </div>
+          </div>
+          <div class="post-image">Post Image 1</div>
+          <div class="post-actions">
+            <div class="post-action">❤️</div>
+            <div class="post-action">💬</div>
+            <div class="post-action">↗️</div>
+          </div>
+          <div class="post-likes">1,243 likes</div>
+          <div class="post-caption">
+            <span>verza_user</span> Beautiful day in Paris! 🌟
+          </div>
+          <div class="post-time">2 hours ago</div>
         </div>
+
+        <div class="post">
+          <div class="post-header">
+            <div class="post-avatar"></div>
+            <div class="post-username">
+              creative_mind <span class="post-location">• New York</span>
+            </div>
+          </div>
+          <div class="post-image">Post Image 2</div>
+          <div class="post-actions">
+            <div class="post-action">❤️</div>
+            <div class="post-action">💬</div>
+            <div class="post-action">↗️</div>
+          </div>
+          <div class="post-likes">892 likes</div>
+          <div class="post-caption">
+            <span>creative_mind</span> Sunset vibes ✨
+          </div>
+          <div class="post-time">5 hours ago</div>
+        </div>
+      </div>
     </div>
-    
+
     <div class="bottom-nav">
-        <a href="home.html" class="nav-item">
-            <div><img src="./photos/home.png" width="20px"></div>
-            <div class="nav-label">Home</div>
-        </a>
-        <a href="search.html" class="nav-item">
-            <div><img src="./photos/search.png" width="27px"></div>
-            <div class="nav-label">Search</div>
-        </a>
-        <a href="profile.html" class="nav-item active">
-            <div><img src="./photos/profile.png" width="46px"></div>
-            <div class="nav-label">Profile</div>
-        </a>
+      <a href="home.html" class="nav-item">
+        <div><img src="./photos/home.png" width="20px" /></div>
+        <div class="nav-label">Home</div>
+      </a>
+      <a href="search.html" class="nav-item">
+        <div><img src="./photos/search.png" width="27px" /></div>
+        <div class="nav-label">Search</div>
+      </a>
+      <a href="profile.html" class="nav-item active">
+        <div><img src="./photos/profile.png" width="46px" /></div>
+        <div class="nav-label">Profile</div>
+      </a>
     </div>
-</body>
+    <script>
+      const fetchProfile = async () => {
+        try {
+          const response = await fetch("http://127.0.0.1:3001/users/me", {
+            credentials: "include",
+          });
+          const data = await response.json();
+          console.log("Profile Data:", data);
+        } catch (error) {
+          console.error("Error fetching profile data:", error);
+        }
+      };
+    </script>
+  </body>
 </html>
-

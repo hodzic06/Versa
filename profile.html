@@ -1,76 +1,74 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile • Verza</title>
-    <link rel="stylesheet" type="text/css" href="profilestyle.css">
-</head>
-<body>
-
+    <link rel="stylesheet" type="text/css" href="profilestyle.css" />
+  </head>
+  <body>
     <div class="main-content">
-        <!-- Profile Header -->
-        <div class="profile-header">
-            <div class="profile-info">
-                <div class="profile-avatar">👤</div>
-                <div class="profile-stats">
-                    <div class="stats-row">
-                        <div class="stat">
-                            <div class="stat-number">0</div>
-                            <div class="stat-label">posts</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-number">0</div>
-                            <div class="stat-label">followers</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-number">0</div>
-                            <div class="stat-label">following</div>
-                        </div>
-                    </div>
-                </div>
+      <!-- Profile Header -->
+      <div class="profile-header">
+        <div class="profile-info">
+          <div class="profile-avatar">👤</div>
+          <div class="profile-stats">
+            <div class="stats-row">
+              <div class="stat">
+                <div class="stat-number">0</div>
+                <div class="stat-label">posts</div>
+              </div>
+              <div class="stat">
+                <div class="stat-number">0</div>
+                <div class="stat-label">followers</div>
+              </div>
+              <div class="stat">
+                <div class="stat-number">0</div>
+                <div class="stat-label">following</div>
+              </div>
             </div>
-            
-            <div class="profile-details">
-                <div class="profile-username"></div>
-                <div class="profile-name"></div>
-                <div class="profile-bio"></div>
-                <a href="#" class="profile-website"></a>
-            </div>
-            
-            <div class="profile-actions">
-                <button class="action-btn edit-profile">Edit Profile</button>
-                <button class="action-btn">Share</button>
-            </div>
+          </div>
         </div>
-        
-        <!-- Profile Tabs -->
-        <div class="profile-tabs">
-            <a href="#" class="tab active">
-                <div class="tab-icon">📊</div>
-                <div class="tab-label">Posts</div>
-            </a>
+
+        <div class="profile-details">
+          <div class="profile-username"></div>
+          <div class="profile-name"></div>
+          <div class="profile-bio"></div>
+          <a href="#" class="profile-website"></a>
         </div>
-        
-        <!-- Profile Grid (prazno, puni se kasnije) -->
-        <div class="profile-grid"></div>
+      </div>
+
+      <!-- Create Post Section (samo za vlastiti profil) -->
+      <div class="create-post-section" style="display: none">
+        <div class="create-post-container">
+          <div class="create-post-avatar">👤</div>
+          <textarea
+            placeholder="What's on your mind?"
+            class="create-post-input"
+          ></textarea>
+        </div>
+        <button class="create-post-btn">Post</button>
+      </div>
+
+      <!-- Profile Feed -->
+      <div class="profile-feed"></div>
     </div>
-    
+
     <div class="bottom-nav">
-        <a href="home.html" class="nav-item">
-            <div><img src="./photos/home.png" width="20px"></div>
-            <div class="nav-label">Home</div>
-        </a>
-        <a href="search.html" class="nav-item">
-            <div><img src="./photos/search.png" width="27px"></div>
-            <div class="nav-label">Search</div>
-        </a>
-        <a href="profile.html" class="nav-item active">
-            <div><img src="./photos/profile.png" width="46px"></div>
-            <div class="nav-label">Profile</div>
-        </a>
+      <a href="home.html" class="nav-item">
+        <div><img src="./photos/home.png" width="20px" /></div>
+        <div class="nav-label">Home</div>
+      </a>
+      <a href="search.html" class="nav-item">
+        <div><img src="./photos/search.png" width="27px" /></div>
+        <div class="nav-label">Search</div>
+      </a>
+      <a href="profile.html" class="nav-item active">
+        <div><img src="./photos/profile.png" width="46px" /></div>
+        <div class="nav-label">Profile</div>
+      </a>
     </div>
 
     <script src="profile.js"></script>
-</body>
+  </body>
 </html>

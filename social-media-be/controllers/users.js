@@ -69,48 +69,76 @@ export const login = async (req, res) => {
       .eq("email", email)
       .single();
 
-    if (error || !user)
+    if (error || !user) {
       return res.status(400).json({ error: "Invalid email or password" });
+    }
 
     const match = await bcrypt.compare(password, user.password);
-    if (!match)
+    if (!match) {
       return res.status(400).json({ error: "Invalid email or password" });
+    }
 
+    // ✅ GENERISANJE TOKENA
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN || "7d",
     });
 
+    // ✅ POSTAVI COOKIE
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production" ? true : false,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).json({ message: "Login successful", user });
-  } catch {
+    res.status(200).json({ message: "Register successful", user });
+  } catch (err) {
+    console.error("Login error:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
 
 // 🔹 GET CURRENT USER (iz tokena)
 export const getCurrentUser = async (req, res) => {
   try {
     const token = req.cookies.token;
-    if (!token) return res.status(401).json({ error: "Not authenticated" });
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!token) {
+      console.log("No token found");
+      return res
+        .status(401)
+        .json({ redirect: "/login.html", error: "Not authenticated" });
+    }
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch {
+      res.clearCookie("token");
+      return res
+        .status(401)
+        .json({ redirect: "/login.html", error: "Invalid token" });
+    }
+
     const { data, error } = await supabase
       .from("users")
       .select("id, username, name, email, posts, created_at")
       .eq("id", decoded.userId)
       .single();
 
-    if (error) return res.status(404).json({ error: "User not found" });
+    if (error || !data) {
+      res.clearCookie("token");
+      return res
+        .status(401)
+        .json({ redirect: "/login.html", error: "User not found" });
+    }
+
     res.status(200).json(data);
-  } catch {
-    res.status(401).json({ error: "Invalid or expired token" });
+  } catch (err) {
+    res.clearCookie("token");
+    return res
+      .status(401)
+      .json({ redirect: "/login.html", error: err.message });
   }
 };
 
