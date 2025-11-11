@@ -17,41 +17,35 @@
             
             <div class="form-group">
                 <label class="form-label">Full Name</label>
-                <input type="text" class="input-field" name="name" placeholder="Full Name" required>
+                <input type="text" class="input-field" name="name" placeholder="Full Name" id="name" required>
             </div>
             
             <div class="form-group">
                 <label class="form-label">Username</label>
-                <input type="text" class="input-field" name="username" placeholder="Username" required>
+                <input type="text" class="input-field" name="username" placeholder="Username" id="username" required>
             </div>
             
             <div class="form-group">
                 <label class="form-label">Email</label>
-                <input type="email" class="input-field" name="email" placeholder="Email" required>
+                <input type="email" class="input-field" name="email" placeholder="Email" id="email" required>
             </div>
             
             <div class="form-group">
                 <label class="form-label">Password</label>
                 <div style="position: relative;">
-                    <input type="password" class="input-field" name="password" placeholder="••••••••" required>
+                    <input type="password" class="input-field" name="password" placeholder="••••••••" id="password" required>
                     <span class="password-toggle" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: rgba(255, 255, 255, 0.6); cursor: pointer;">👁️</span>
                 </div>
             </div>
             
-            <button class="register-btn" type="submit">Register</button>
+            <button class="register-btn" id="sign-btn" type="submit">Register</button>
             
             <div class="divider">Or continue with</div>
             
             <div class="social-login">
-                <div class="social-btn">
-                    <div class="google-icon"></div>
-                </div>
-                <div class="social-btn">
-                    <div class="apple-icon"></div>
-                </div>
-                <div class="social-btn">
-                    <div class="facebook-icon"></div>
-                </div>
+                <div class="social-btn"><div class="google-icon"></div></div>
+                <div class="social-btn"><div class="apple-icon"></div></div>
+                <div class="social-btn"><div class="facebook-icon"></div></div>
             </div>
             
             <div class="login-link">
@@ -59,6 +53,6 @@
             </div>
         </div>
     </div>
+    <script src="register.js"></script>
 </body>
 </html>
-
