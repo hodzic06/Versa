@@ -7,11 +7,26 @@ const profileFeed = document.querySelector(".profile-feed");
 const createPostSection = document.querySelector(".create-post-section");
 const createPostInput = document.querySelector(".create-post-input");
 const createPostBtn = document.querySelector(".create-post-btn");
+const createPostAvatar = document.querySelector(".create-post-avatar");
 
 const params = new URLSearchParams(window.location.search);
 const userIdParam = params.get("id");
 
 let currentUser = null;
+
+function saveLocalPost(post) {
+  let saved = JSON.parse(localStorage.getItem('localPosts')) || [];
+  saved.unshift(post);
+  localStorage.setItem('localPosts', JSON.stringify(saved));
+}
+
+function getLocalPosts() {
+  return JSON.parse(localStorage.getItem('localPosts')) || [];
+}
+
+function clearLocalPosts() {
+  localStorage.removeItem('localPosts');
+}
 
 async function loadProfile() {
   try {
@@ -23,13 +38,11 @@ async function loadProfile() {
     const data = await res.json();
 
     if (!res.ok) {
-      if (res.status === 401 && !userIdParam)
-        window.location.href = "/login.html";
+      if (res.status === 401 && !userIdParam) window.location.href = "/login.html";
       throw new Error(data.error || "Failed to load profile");
     }
 
     currentUser = data.user || data;
-    console.log(currentUser);
 
     usernameEl.textContent = currentUser.username;
     nameEl.textContent = currentUser.name || "";
@@ -37,18 +50,19 @@ async function loadProfile() {
     websiteEl.textContent = currentUser.website || "";
     websiteEl.href = currentUser.website || "#";
 
-    // Avatar
     avatarEl.innerHTML = currentUser.avatar
       ? `<img src="${currentUser.avatar}" alt="avatar"/>`
       : `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || currentUser.username)}&background=random&size=80&rounded=true" alt="avatar"/>`;
 
-    document.querySelectorAll(".stat-number")[0].textContent = (
-      currentUser.posts || []
-    ).length;
-    document.querySelectorAll(".stat-number")[1].textContent =
-      currentUser.followers_count || 0;
-    document.querySelectorAll(".stat-number")[2].textContent =
-      currentUser.following_count || 0;
+    if (createPostAvatar) {
+      createPostAvatar.innerHTML = currentUser.avatar
+        ? `<img src="${currentUser.avatar}" alt="avatar" style="width:45px;height:45px;border-radius:50%;object-fit:cover;"/>`
+        : `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || currentUser.username)}&background=random&size=45&rounded=true" alt="avatar" style="width:45px;height:45px;border-radius:50%;object-fit:cover;"/>`;
+    }
+
+    document.querySelectorAll(".stat-number")[0].textContent = (currentUser.posts || []).length;
+    document.querySelectorAll(".stat-number")[1].textContent = currentUser.followers_count || 0;
+    document.querySelectorAll(".stat-number")[2].textContent = currentUser.following_count || 0;
 
     document.title = `${currentUser.username} • Verza`;
 
@@ -79,6 +93,8 @@ async function createPost() {
   if (!res.ok) return alert(data.error || "Failed to create post");
 
   createPostInput.value = "";
+
+  saveLocalPost(data);
   addPostToDOM(data, true);
 }
 
@@ -107,6 +123,8 @@ function addPostToDOM(post, prepend = true) {
         credentials: "include",
       });
       card.remove();
+      const local = getLocalPosts().filter(p => p.id !== post.id);
+      localStorage.setItem('localPosts', JSON.stringify(local));
     };
     actions.appendChild(deleteBtn);
   }
@@ -158,8 +176,7 @@ async function updatePostLikes(card, postId) {
     credentials: "include",
   });
   const data = await res.json();
-  card.querySelector(".like-btn").textContent =
-    `Like (${data.likes?.length || 0})`;
+  card.querySelector(".like-btn").textContent = `Like (${data.likes?.length || 0})`;
 }
 
 async function updatePostComments(card, postId) {
@@ -183,6 +200,8 @@ async function updatePostComments(card, postId) {
 function renderPosts(posts) {
   profileFeed.innerHTML = "";
   posts.forEach((post) => addPostToDOM(post, false));
+  const local = getLocalPosts();
+  local.forEach((post) => addPostToDOM(post, false));
 }
 
 loadProfile();

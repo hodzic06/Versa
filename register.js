@@ -22,7 +22,7 @@ const registerUser = async (event) => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, username, email, password }),
-            credentials: 'include' // 👈 omogućava cookie-e
+            credentials: 'include'
         });
 
         if (response.ok) {

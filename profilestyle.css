@@ -91,7 +91,6 @@ body {
   text-decoration: none;
 }
 
-/* Create Post */
 .create-post-section {
   background: rgba(25, 16, 36, 0.8);
   padding: 12px 15px;
@@ -127,7 +126,6 @@ body {
   font-size: 14px;
 }
 
-/* Ljepše dugme za post */
 .create-post-btn {
   width: 100%;
   padding: 10px;
@@ -145,7 +143,6 @@ body {
   opacity: 0.9;
 }
 
-/* Feed */
 .profile-feed {
   display: flex;
   flex-direction: column;
@@ -209,7 +206,6 @@ body {
   color: white;
 }
 
-/* Bottom nav */
 .bottom-nav {
   position: fixed;
   bottom: 0;

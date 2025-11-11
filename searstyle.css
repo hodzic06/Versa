@@ -153,7 +153,6 @@ body {
     box-shadow: 0 2px 8px rgba(156, 77, 255, 0.4);
 }
 
-/* Bottom navigation */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -188,13 +187,11 @@ body {
     margin-top: 3px;
 }
 
-/* Main content */
 .main-content {
     padding-bottom: 70px;
     min-height: 100vh;
 }
 
-/* Decorative elements */
 .decoration {
     position: absolute;
     z-index: -1;
